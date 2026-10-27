@@ -16,3 +16,9 @@ test('matching ETag returns 304', async () => { const o = object(); delete o.bod
 test('unlisted objects cannot be read', async () => { let accessed = false; const c = context(new Request('https://portfolio.example/media/private.txt')); c.env.MEDIA.get = async () => { accessed = true; }; assert.equal((await onRequest(c)).status, 404); assert.equal(accessed, false); });
 test('missing objects return 404', async () => { assert.equal((await onRequest(context(new Request(url), null))).status, 404); });
 test('upload methods are not exposed', async () => { assert.equal((await onRequest(context(new Request(url, { method: 'PUT' })))).status, 405); });
+
+test('R2 range objects may expose an undefined suffix field', async () => {
+  const c = context(new Request(url, { headers: { Range: 'bytes=0-31' } }), object({ range: { offset: 0, length: 32, suffix: undefined } }));
+  const r = await onRequest(c);
+  assert.equal(r.status, 206); assert.equal(r.headers.get('Content-Range'), 'bytes 0-31/1000'); assert.equal(r.headers.get('Content-Length'), '32');
+});

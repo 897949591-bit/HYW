@@ -27,4 +27,4 @@
 
 ## 更新
 
-修改 `site/index.html` 的 `CONTENT` 或页面文案，提交到 GitHub 后由 Pages 自动构建。变更媒体时同步更新 `media-manifest.json` 与 `lib/allowed-media.js`。
+修改 `site/index.html` 的 `CONTENT` 或页面文案，提交到 GitHub 保存源码后，执行 `npm run build`，再运行 `npx wrangler pages deploy dist --project-name hu-yaowen-portfolio --branch main` 发布。当前项目采用直接部署，不会自动跟随 GitHub 推送。变更媒体时同步更新 `media-manifest.json` 与 `lib/allowed-media.js`。

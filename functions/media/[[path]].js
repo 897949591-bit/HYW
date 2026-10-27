@@ -26,7 +26,7 @@ export async function onRequest({ request, env }) {
   let length = object.size;
   if (object.range) {
     let start, end;
-    if ('suffix' in object.range) {
+    if (Number.isFinite(object.range.suffix)) {
       length = Math.min(object.size, object.range.suffix);
       start = object.size - length; end = object.size - 1;
     } else {
