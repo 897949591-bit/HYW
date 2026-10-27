@@ -22,3 +22,12 @@ test('R2 range objects may expose an undefined suffix field', async () => {
   const r = await onRequest(c);
   assert.equal(r.status, 206); assert.equal(r.headers.get('Content-Range'), 'bytes 0-31/1000'); assert.equal(r.headers.get('Content-Length'), '32');
 });
+
+test('full responses remain 200 even when R2 includes range metadata', async () => {
+  const r = await onRequest(context(new Request(url), object({range:{offset:0,length:1000,suffix:undefined}})));
+  assert.equal(r.status,200);assert.equal(r.headers.get('Content-Range'),null);assert.equal(r.headers.get('Content-Length'),'1000');
+});
+test('HEAD ignores Range and returns full metadata', async () => {
+  const r = await onRequest(context(new Request(url,{method:'HEAD',headers:{Range:'bytes=0-31'}}),object({range:{offset:0,length:32,suffix:undefined}})));
+  assert.equal(r.status,200);assert.equal(r.headers.get('Content-Range'),null);assert.equal(r.headers.get('Content-Length'),'1000');assert.equal(await r.text(),'');
+});

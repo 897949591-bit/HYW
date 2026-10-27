@@ -24,7 +24,7 @@ export async function onRequest({ request, env }) {
   }
   let status = 200;
   let length = object.size;
-  if (object.range) {
+  if (request.method === 'GET' && request.headers.has('Range') && object.range) {
     let start, end;
     if (Number.isFinite(object.range.suffix)) {
       length = Math.min(object.size, object.range.suffix);
